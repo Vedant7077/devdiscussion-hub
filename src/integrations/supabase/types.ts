@@ -14,7 +14,7 @@ export type Database = {
           category: string
           comments_count: number
           content: string
-          cover_image: string
+          cover_image: string | null
           created_at: string
           excerpt: string
           id: string
@@ -26,7 +26,7 @@ export type Database = {
           category: string
           comments_count?: number
           content: string
-          cover_image: string
+          cover_image?: string | null
           created_at?: string
           excerpt: string
           id?: string
@@ -38,7 +38,7 @@ export type Database = {
           category?: string
           comments_count?: number
           content?: string
-          cover_image?: string
+          cover_image?: string | null
           created_at?: string
           excerpt?: string
           id?: string

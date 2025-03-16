@@ -125,3 +125,144 @@
     @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
   }
 }
+
+/* Improved markdown styling for article content */
+.prose pre {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: rgb(31, 41, 55);
+  color: white;
+  overflow-x: auto;
+}
+
+.prose code {
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  background-color: rgba(209, 213, 219, 0.3);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: rgb(17, 24, 39);
+}
+
+.prose h1 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.prose h2 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+  padding-bottom: 0.5rem;
+}
+
+.prose h3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.prose ul, .prose ol {
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose a {
+  color: rgb(37, 99, 235);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose a:hover {
+  text-decoration: none;
+}
+
+.prose blockquote {
+  border-left-width: 4px;
+  border-left-color: rgb(209, 213, 219);
+  padding-left: 1rem;
+  font-style: italic;
+  color: rgb(107, 114, 128);
+}
+
+.prose img {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 0.5rem;
+}
+
+.prose table {
+  width: 100%;
+  table-layout: auto;
+  text-align: left;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-collapse: collapse;
+}
+
+.prose table th {
+  background-color: rgba(243, 244, 246, 0.8);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgb(229, 231, 235);
+}
+
+.prose table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgb(229, 231, 235);
+}
+
+.dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4, .dark .prose h5, .dark .prose h6 {
+  color: rgb(243, 244, 246);
+}
+
+.dark .prose {
+  color: rgb(209, 213, 219);
+}
+
+.dark .prose code {
+  background-color: rgba(55, 65, 81, 0.5);
+}
+
+.dark .prose a {
+  color: rgb(96, 165, 250);
+}
+
+.dark .prose blockquote {
+  border-left-color: rgb(75, 85, 99);
+  color: rgb(156, 163, 175);
+}
+
+.dark .prose table th {
+  background-color: rgba(31, 41, 55, 0.8);
+  border-bottom: 1px solid rgb(55, 65, 81);
+}
+
+.dark .prose table td {
+  border-bottom: 1px solid rgb(55, 65, 81);
+}

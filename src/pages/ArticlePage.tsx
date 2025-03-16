@@ -5,6 +5,8 @@ import { Footer } from "@/components/Footer";
 import { fetchPostById } from "@/services/postService";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 const ArticlePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +17,15 @@ const ArticlePage = () => {
     queryFn: () => fetchPostById(id || ""),
     enabled: !!id,
   });
+
+  // Function to safely render markdown content
+  const renderMarkdown = (content: string) => {
+    // Parse markdown to HTML
+    const rawHtml = marked.parse(content);
+    // Sanitize HTML to prevent XSS attacks
+    const cleanHtml = DOMPurify.sanitize(rawHtml);
+    return cleanHtml;
+  };
 
   if (error) {
     toast({
@@ -98,7 +109,10 @@ const ArticlePage = () => {
             />
           </div>
           
-          <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: article.content }} />
+          <div 
+            className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-primary prose-code:text-gray-800 prose-code:bg-gray-100 prose-code:rounded prose-code:px-1 prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-img:rounded-lg" 
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(article.content) }} 
+          />
         </article>
       </main>
       
