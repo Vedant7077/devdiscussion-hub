@@ -11,7 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const LANGUAGES = [
+// Default languages if none are provided
+const DEFAULT_LANGUAGES = [
   { id: "all", name: "All Languages" },
   { id: "javascript", name: "JavaScript" },
   { id: "typescript", name: "TypeScript" },
@@ -26,9 +27,13 @@ const LANGUAGES = [
 
 interface LanguageFilterProps {
   onFilterChange: (language: string) => void;
+  languages?: { id: string; name: string }[];
 }
 
-export function LanguageFilter({ onFilterChange }: LanguageFilterProps) {
+export function LanguageFilter({ 
+  onFilterChange, 
+  languages = DEFAULT_LANGUAGES 
+}: LanguageFilterProps) {
   const [selectedLanguage, setSelectedLanguage] = useState<string>("all");
 
   const handleLanguageSelect = (language: string) => {
@@ -41,7 +46,7 @@ export function LanguageFilter({ onFilterChange }: LanguageFilterProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="flex items-center gap-2 bg-background">
           <span className="text-sm font-medium">
-            {LANGUAGES.find(lang => lang.id === selectedLanguage)?.name || "All Languages"}
+            {languages.find(lang => lang.id === selectedLanguage)?.name || "All Languages"}
           </span>
           <ChevronDown className="h-4 w-4 opacity-70" />
         </Button>
@@ -49,7 +54,7 @@ export function LanguageFilter({ onFilterChange }: LanguageFilterProps) {
       <DropdownMenuContent className="w-56 max-h-[calc(100vh-100px)] overflow-auto" align="end">
         <DropdownMenuLabel>Filter by Language</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {LANGUAGES.map((language) => (
+        {languages.map((language) => (
           <DropdownMenuCheckboxItem
             key={language.id}
             checked={selectedLanguage === language.id}
