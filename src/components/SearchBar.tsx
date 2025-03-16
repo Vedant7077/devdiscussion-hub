@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,16 @@ import { Button } from "@/components/ui/button";
 interface SearchBarProps {
   onSearch: (query: string) => void;
   placeholder?: string;
+  initialValue?: string;
 }
 
-export function SearchBar({ onSearch, placeholder = "Search articles..." }: SearchBarProps) {
-  const [query, setQuery] = useState("");
+export function SearchBar({ onSearch, placeholder = "Search articles...", initialValue = "" }: SearchBarProps) {
+  const [query, setQuery] = useState(initialValue);
+
+  // Update query when initialValue changes
+  useEffect(() => {
+    setQuery(initialValue);
+  }, [initialValue]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

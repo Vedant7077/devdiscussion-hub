@@ -2,22 +2,48 @@
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/SearchBar";
 import { ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
+  const navigate = useNavigate();
+
+  // Fetch categories from database
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("category")
+        .order("category");
+      
+      if (error) {
+        console.error("Error fetching categories:", error);
+        return;
+      }
+
+      // Extract unique categories
+      const uniqueCategories = Array.from(
+        new Set(data.map(post => post.category))
+      );
+      
+      setCategories(uniqueCategories);
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    // We're now using the search functionality directly in the Index component
-    // This will filter posts without redirecting to another page
-    window.scrollTo({
-      top: document.querySelector('.py-16')?.offsetTop || 0,
-      behavior: 'smooth'
-    });
-    
-    // Trigger the global search through a custom event
-    window.dispatchEvent(new CustomEvent('global-search', { detail: query }));
+    if (query) {
+      navigate(`/search?q=${encodeURIComponent(query)}`);
+    }
+  };
+
+  const handleCategoryClick = (category: string) => {
+    navigate(`/category/${encodeURIComponent(category.toLowerCase())}`);
   };
 
   return (
@@ -41,18 +67,17 @@ export function HeroSection() {
         </div>
         
         <div className="flex flex-wrap justify-center gap-3 pt-2">
-          <Button variant="outline" className="rounded-full group">
-            <span>Tutorials</span>
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
-          <Button variant="outline" className="rounded-full group">
-            <span>News</span>
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
-          <Button variant="outline" className="rounded-full group">
-            <span>Code Snippets</span>
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
+          {categories.map((category) => (
+            <Button 
+              key={category}
+              variant="outline" 
+              className="rounded-full group"
+              onClick={() => handleCategoryClick(category)}
+            >
+              <span>{category}</span>
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          ))}
         </div>
       </div>
     </section>
