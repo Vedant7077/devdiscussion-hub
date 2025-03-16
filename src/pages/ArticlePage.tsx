@@ -81,7 +81,7 @@ const ArticlePage = () => {
         <article className="max-w-4xl mx-auto">
           <header className="mb-8">
             <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
-            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
               <span>{new Date(article.created_at).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
@@ -94,10 +94,10 @@ const ArticlePage = () => {
               {article.language && (
                 <>
                   <span>•</span>
-                  <span className="px-2 py-1 bg-gray-100 rounded-full">{article.language}</span>
+                  <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">{article.language}</span>
                 </>
               )}
-              <span className="px-2 py-1 bg-gray-100 rounded-full">{article.category}</span>
+              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">{article.category}</span>
             </div>
           </header>
           
@@ -110,7 +110,7 @@ const ArticlePage = () => {
           </div>
           
           <div 
-            className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-primary prose-code:text-gray-800 prose-code:bg-gray-100 prose-code:rounded prose-code:px-1 prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-img:rounded-lg" 
+            className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-primary prose-code:text-gray-800 dark:prose-code:text-gray-200 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:rounded prose-code:px-1 prose-pre:bg-gray-800 prose-pre:text-gray-100 dark:prose-pre:bg-gray-900 dark:prose-pre:text-gray-200 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-img:rounded-lg prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-ol:text-gray-700 dark:prose-ol:text-gray-300 prose-li:text-gray-700 dark:prose-li:text-gray-300 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300 prose-blockquote:border-gray-300 dark:prose-blockquote:border-gray-700" 
             dangerouslySetInnerHTML={{ __html: renderMarkdown(article.content) }} 
           />
         </article>
