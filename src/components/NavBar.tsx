@@ -1,8 +1,6 @@
 
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Link } from "react-router-dom";
-import { Plus } from "lucide-react";
 
 export const NavBar = () => {
   return (
@@ -13,12 +11,6 @@ export const NavBar = () => {
         </Link>
         
         <nav className="flex items-center gap-4">
-          <Link to="/new">
-            <Button variant="outline" size="sm" className="flex items-center gap-1">
-              <Plus className="h-4 w-4" />
-              <span>New Post</span>
-            </Button>
-          </Link>
           <ThemeToggle />
         </nav>
       </div>

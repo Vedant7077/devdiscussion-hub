@@ -89,8 +89,6 @@ const ArticlePage = () => {
               })}</span>
               <span>•</span>
               <span>{article.read_time}</span>
-              <span>•</span>
-              <span>{article.comments_count} comments</span>
               {article.language && (
                 <>
                   <span>•</span>

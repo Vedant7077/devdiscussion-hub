@@ -3,17 +3,21 @@ import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/SearchBar";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query) {
-      navigate(`/search?q=${encodeURIComponent(query)}`);
-    }
+    // We're now using the search functionality directly in the Index component
+    // This will filter posts without redirecting to another page
+    window.scrollTo({
+      top: document.querySelector('.py-16')?.offsetTop || 0,
+      behavior: 'smooth'
+    });
+    
+    // Trigger the global search through a custom event
+    window.dispatchEvent(new CustomEvent('global-search', { detail: query }));
   };
 
   return (

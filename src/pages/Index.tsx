@@ -7,7 +7,6 @@ import { ArticleCard } from "@/components/ArticleCard";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { LanguageFilter } from "@/components/LanguageFilter";
 import { SearchBar } from "@/components/SearchBar";
-import { categories } from "@/data/articles";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { fetchAllPosts } from "@/services/postService";
@@ -21,6 +20,9 @@ const Index = () => {
   const [activeLanguage, setActiveLanguage] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredPosts, setFilteredPosts] = useState<PostData[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([
+    { id: "all", name: "All" }
+  ]);
 
   const { data: posts, isLoading, error } = useQuery({
     queryKey: ["posts"],
@@ -36,6 +38,22 @@ const Index = () => {
       });
     }
   }, [error, toast]);
+
+  // Extract categories from posts
+  useEffect(() => {
+    if (!posts) return;
+    
+    // Extract unique categories from posts
+    const uniqueCategories = Array.from(
+      new Set(posts.map(post => post.category.toLowerCase()))
+    ).map(category => ({
+      id: category,
+      name: category.charAt(0).toUpperCase() + category.slice(1) // Capitalize first letter
+    }));
+    
+    // Add "All" category at the beginning
+    setCategories([{ id: "all", name: "All" }, ...uniqueCategories]);
+  }, [posts]);
 
   useEffect(() => {
     if (!posts) return;
