@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
 import { HeroSection } from "@/components/HeroSection";
@@ -6,82 +7,93 @@ import { ArticleCard } from "@/components/ArticleCard";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { LanguageFilter } from "@/components/LanguageFilter";
 import { SearchBar } from "@/components/SearchBar";
-import { categories, getArticlesByCategory, getArticlesByLanguage, searchArticles } from "@/data/articles";
+import { categories } from "@/data/articles";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { fetchAllPosts } from "@/services/postService";
+import { mapPostToArticleProps, PostData } from "@/types/posts";
+import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
-  const [displayedArticles, setDisplayedArticles] = useState(getArticlesByCategory("all"));
+  const { toast } = useToast();
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeLanguage, setActiveLanguage] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [filteredPosts, setFilteredPosts] = useState<PostData[]>([]);
+
+  const { data: posts, isLoading, error } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchAllPosts,
+  });
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load articles. Please try again later.",
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
+
+  useEffect(() => {
+    if (!posts) return;
+    
+    let filtered = [...posts];
+    
+    // Filter by category
+    if (activeCategory !== "all") {
+      filtered = filtered.filter(
+        (post) => post.category.toLowerCase() === activeCategory.toLowerCase()
+      );
+    }
+    
+    // Filter by language
+    if (activeLanguage !== "all") {
+      filtered = filtered.filter(
+        (post) => 
+          post.language && 
+          post.language.toLowerCase() === activeLanguage.toLowerCase()
+      );
+    }
+    
+    // Filter by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (post) =>
+          post.title.toLowerCase().includes(query) ||
+          post.excerpt.toLowerCase().includes(query) ||
+          post.category.toLowerCase().includes(query) ||
+          (post.language && post.language.toLowerCase().includes(query))
+      );
+    }
+    
+    setFilteredPosts(filtered);
+  }, [posts, activeCategory, activeLanguage, searchQuery]);
 
   const handleCategorySelect = (categoryId: string) => {
     setActiveCategory(categoryId);
-    if (searchQuery) {
-      const searchResults = searchArticles(searchQuery);
-      setDisplayedArticles(
-        categoryId === "all"
-          ? searchResults
-          : searchResults.filter(article => article.category.toLowerCase() === categoryId.toLowerCase())
-      );
-    } else if (activeLanguage !== "all") {
-      const languageFiltered = getArticlesByLanguage(activeLanguage);
-      setDisplayedArticles(
-        categoryId === "all"
-          ? languageFiltered
-          : languageFiltered.filter(article => article.category.toLowerCase() === categoryId.toLowerCase())
-      );
-    } else {
-      setDisplayedArticles(getArticlesByCategory(categoryId));
-    }
   };
 
   const handleLanguageSelect = (languageId: string) => {
     setActiveLanguage(languageId);
-    if (searchQuery) {
-      const searchResults = searchArticles(searchQuery);
-      setDisplayedArticles(
-        languageId === "all"
-          ? searchResults
-          : searchResults.filter(article => article.language.toLowerCase() === languageId.toLowerCase())
-      );
-    } else if (activeCategory !== "all") {
-      const categoryFiltered = getArticlesByCategory(activeCategory);
-      setDisplayedArticles(
-        languageId === "all"
-          ? categoryFiltered
-          : categoryFiltered.filter(article => article.language.toLowerCase() === languageId.toLowerCase())
-      );
-    } else {
-      setDisplayedArticles(getArticlesByLanguage(languageId));
-    }
   };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query) {
-      let results = searchArticles(query);
-      
-      if (activeCategory !== "all") {
-        results = results.filter(article => article.category.toLowerCase() === activeCategory.toLowerCase());
-      }
-      
-      if (activeLanguage !== "all") {
-        results = results.filter(article => article.language.toLowerCase() === activeLanguage.toLowerCase());
-      }
-      
-      setDisplayedArticles(results);
-    } else {
-      let articles = getArticlesByCategory(activeCategory);
-      
-      if (activeLanguage !== "all") {
-        articles = articles.filter(article => article.language.toLowerCase() === activeLanguage.toLowerCase());
-      }
-      
-      setDisplayedArticles(articles);
-    }
   };
+
+  // Extract unique languages from posts for the language filter
+  const languages = posts 
+    ? Array.from(new Set(posts.filter(post => post.language).map(post => post.language)))
+        .filter(Boolean)
+        .map(lang => ({ id: lang as string, name: lang as string }))
+    : [];
+  
+  // Add "All" option to languages
+  const allLanguages = [{ id: "all", name: "All" }, ...languages];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -97,17 +109,27 @@ const Index = () => {
                 <h2 className="text-3xl font-bold tracking-tight">Browse Articles</h2>
                 <div className="flex items-center gap-3">
                   <SearchBar onSearch={handleSearch} />
-                  <LanguageFilter onFilterChange={handleLanguageSelect} />
+                  <LanguageFilter 
+                    languages={allLanguages}
+                    onFilterChange={handleLanguageSelect} 
+                  />
                 </div>
               </div>
               
               <CategoryTabs categories={categories} onSelect={handleCategorySelect} />
             </div>
             
-            {displayedArticles.length > 0 ? (
+            {isLoading ? (
+              <div className="text-center py-16">
+                <h3 className="text-xl font-medium">Loading articles...</h3>
+              </div>
+            ) : filteredPosts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {displayedArticles.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
+                {filteredPosts.map((post) => (
+                  <ArticleCard 
+                    key={post.id} 
+                    article={mapPostToArticleProps(post)} 
+                  />
                 ))}
               </div>
             ) : (
