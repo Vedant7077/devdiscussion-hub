@@ -157,12 +157,12 @@ const Index = () => {
               </div>
             )}
             
-            <div className="text-center pt-6">
+            {/* <div className="text-center pt-6">
               <Button className="group">
                 <span>Load More</span>
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
-            </div>
+            </div> */}
           </div>
         </section>
       </main>

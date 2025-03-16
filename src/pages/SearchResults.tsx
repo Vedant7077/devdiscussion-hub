@@ -160,12 +160,14 @@ const SearchResults = () => {
               </div>
             )}
             
-            <div className="text-center pt-6">
+            /* This part of the code is rendering a "Load More" button at the bottom of the page. The
+            button is styled with text centered and positioned with padding top of 6 units. */
+            {/* <div className="text-center pt-6">
               <Button className="group">
                 <span>Load More</span>
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
-            </div>
+            </div> */}
           </div>
         </section>
       </main>
